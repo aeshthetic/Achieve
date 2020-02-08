@@ -4,3 +4,4 @@ storage: none
 framework: netcore3.1
 
 nuget Argu 6.0.0
+nuget Newtonsoft.Json 12.0.3
