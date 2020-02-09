@@ -1,3 +1,4 @@
 src/App/bin
 src/App/obj
 .ionide
+.packet/paket.exe
