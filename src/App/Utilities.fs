@@ -33,7 +33,7 @@ let dataFile =
     let path = 
         let dataDirectory = match getOS with
                             | Windows -> Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)
-                            | _ -> Environment.GetEnvironmentVariable("HOME")
+                            | _ -> Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)
         Path.Combine(dataDirectory, ".achieve")
     if not (Directory.Exists(path)) then Directory.CreateDirectory(path) |> ignore
     let filePath = Path.Combine(path, "goals.json")
