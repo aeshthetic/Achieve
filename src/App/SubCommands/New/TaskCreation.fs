@@ -101,7 +101,7 @@ let createTask () =
 
             name
             |> Result.bind (fun n ->
-                {name = n; dueAt = dueAt; duration = duration; dependsOn = dependencies; startsAt = startsAt}
+                {name = n; dueAt = dueAt; duration = duration; dependsOn = dependencies; startsAt = startsAt; complete = false}
                 |> addTaskToGoal goal)
         
         | None -> Error "Goal does not exist"

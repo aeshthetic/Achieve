@@ -8,7 +8,7 @@ let goalList = allGoals ()
 
 let displayFunctionality (arg: ParseResults<DisplayArgs>) =
     match arg.GetAllResults().Head with
-    | Goal name ->
+    | DisplayArgs.Goal name ->
         match tryFindGoal goalList name with
         | Some goal ->
             printfn "%s" (displayGoal goal)
@@ -23,4 +23,6 @@ let displayFunctionality (arg: ParseResults<DisplayArgs>) =
                 Ok "Success: Task displayed successfully"
             | None -> Error "Error: Task could not be found"
         | None -> Error "Error: Goal could not be found"
-    | Progress -> Error "Not implemented"
+    | Progress ->
+        printfn "%s" (displayProgress goalList)
+        Ok "Success: Progress displayed successfully"

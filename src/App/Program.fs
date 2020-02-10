@@ -2,6 +2,7 @@
 open Parser
 open Achieve.SubCommands.New.Command
 open Achieve.SubCommands.Display.Command
+open Achieve.SubCommands.Complete.Command
 
 let reportResults = function
     | Ok msg -> printfn "%s" msg
@@ -18,6 +19,8 @@ let main argv =
                 newFunctionality arg
             | Display arg ->
                 displayFunctionality arg
+            | Complete arg ->
+                completeFunctionality arg
             | _ -> Error "Command not found"
         | None -> Error "No subcommand given"
         |> reportResults

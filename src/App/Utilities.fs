@@ -55,3 +55,31 @@ let tryFindTask goal name =
     goal.tasks
     |> List.filter (fun task -> task.name = name)
     |> List.tryHead
+
+let updateGoalList (goals: Goal list) =
+    goals
+    |> JsonConvert.SerializeObject
+    |> (fun it ->
+        try
+            File.WriteAllText(dataFile, it)
+            Ok "Goal list updated successfully"
+        with e ->
+            Error e.Message
+        )
+
+let updateList l o n =
+    n :: (
+        l
+        |> List.filter (fun x -> x <> o)
+    )
+
+let updateGoal (goals: Goal list) (oldGoal: Goal) (newGoal: Goal) =
+    updateList goals oldGoal newGoal
+    |> updateGoalList
+
+let updateTask (goals: Goal list) (goal: Goal) (oldTask: Task) (newTask: Task) =
+    newTask
+    |> updateList goal.tasks oldTask
+    |> (fun x -> updateList goals goal {goal with tasks = x})
+    |> updateGoalList
+

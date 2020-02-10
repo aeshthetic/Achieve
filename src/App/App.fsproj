@@ -14,6 +14,7 @@
     <Compile Include="SubCommands/Display/Utilities.fs" />
     <Compile Include="SubCommands/Display/DisplayFunctions.fs" />
     <Compile Include="SubCommands/Display/Command.fs" />
+    <Compile Include="SubCommands/Complete/Command.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

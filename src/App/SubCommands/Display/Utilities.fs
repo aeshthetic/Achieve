@@ -17,6 +17,7 @@ let taskRow (task: Task) =
               |> List.map (fun t -> t.name)
               |> String.concat "; "
           | None -> "None"
+        ; task.complete.ToString()
     ] |> String.concat " | "
 
 let taskHeader =
@@ -26,6 +27,7 @@ let taskHeader =
         "Duration"
         "Start Date and Time"
         "Dependent Upon"
+        "Complete"
     ] |> String.concat " | "
 
 
@@ -36,3 +38,31 @@ let goalTable goal =
         |> String.concat "\n"
     
     [taskHeader ; rows] |> String.concat "\n"
+
+let progressQuotient goal =
+    goal.tasks
+    |> List.filter (fun t -> t.complete)
+    |> List.length
+    |> float
+    |> (fun completed -> completed / (goal.tasks |> List.length |> float))
+
+let drawProgress quotient =
+    let completedPortion =
+        (quotient * 100.0)
+        |> int
+    let completedString =
+        completedPortion
+        |> ((..) 1)
+        |> Seq.toList
+        |> List.map (fun x -> "#")
+        |> String.concat ""
+    let spaces =
+        (100 - completedPortion)
+        |> ((..) 1)
+        |> Seq.toList
+        |> List.map (fun x -> " ")
+        |> String.concat ""
+    
+    ["[" ; completedString ; spaces ; "]"] |> String.concat ""
+
+    

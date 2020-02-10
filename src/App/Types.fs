@@ -7,6 +7,7 @@ type Task = {
     duration: TimeSpan option;
     dependsOn: Task list option;
     startsAt: DateTime option;
+    complete: bool
 }
 
 type Goal = {

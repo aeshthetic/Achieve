@@ -15,3 +15,16 @@ let displayTask task =
         taskHeader
         taskRow task
     ] |> String.concat "\n"
+
+
+
+let individualProgress goal =
+    goal
+    |> progressQuotient
+    |> drawProgress
+    |> sprintf "%s (%i%% complete): %s" goal.name (((progressQuotient goal) * 100.0) |> int)
+
+let displayProgress goals =
+    goals
+    |> List.map individualProgress
+    |> String.concat "\n"
