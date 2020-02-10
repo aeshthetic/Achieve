@@ -45,3 +45,13 @@ let allGoals () =
     File.ReadAllLines(dataFile)
     |> Array.reduce (+)
     |> JsonConvert.DeserializeObject<Goal list>
+
+let tryFindGoal goals name =
+    goals
+    |> List.filter (fun goal -> goal.name = name)
+    |> List.tryHead
+
+let tryFindTask goal name =
+    goal.tasks
+    |> List.filter (fun task -> task.name = name)
+    |> List.tryHead

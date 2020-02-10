@@ -1,6 +1,11 @@
 ﻿module Achieve.Program
 open Parser
-open NewSubCommand
+open Achieve.SubCommands.New.Command
+open Achieve.SubCommands.Display.Command
+
+let reportResults = function
+    | Ok msg -> printfn "%s" msg
+    | Error msg -> printfn "%s" msg
 
 [<EntryPoint>]
 let main argv =
@@ -11,9 +16,11 @@ let main argv =
             match command with
             | New arg ->
                 newFunctionality arg
+            | Display arg ->
+                displayFunctionality arg
             | _ -> Error "Command not found"
         | None -> Error "No subcommand given"
-        |> ignore
+        |> reportResults
     with e ->
         printfn "%s" e.Message
     0

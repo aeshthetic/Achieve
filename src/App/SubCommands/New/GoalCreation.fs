@@ -1,4 +1,4 @@
-module Achieve.GoalCreation
+module Achieve.SubCommands.New.GoalCreation
 open Achieve.Types
 open Achieve.Utilities
 open Newtonsoft.Json

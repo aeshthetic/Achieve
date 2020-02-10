@@ -1,26 +1,17 @@
-module Achieve.TaskCreation
+module Achieve.SubCommands.New.TaskCreation
 open System
 open System.Globalization
 open Achieve.Types
 open Achieve.Utilities
-open Achieve.GoalCreation
+open Achieve.SubCommands.New.GoalCreation
 
 let existingGoals = allGoals() 
 
-let tryFindGoal name =
-    existingGoals
-    |> List.filter (fun goal -> goal.name = name)
-    |> List.tryHead
-
 let nameTask goal name =
-    let taskAlreadyExists =
-        goal.tasks
-        |> List.map (fun t -> t.name)
-        |> List.contains name
-    
-    match taskAlreadyExists with
-    | false -> Ok name
-    | true -> Error "A task with this name already exists under this goal. Are you sure you don't want to update it?"
+    match tryFindTask goal name with
+    | Some _ -> Error "A task with this name already exists under this goal. Are you sure you don't want to update it?"
+    | None -> Ok name
+
 
 let timeInput object format tryParseFunction toStringFunction =
     printf "(Optional) %s (%s): " object format
@@ -86,7 +77,7 @@ let createTask () =
         printf "Enter the name of a goal to create this task under: "
         let goal =
             Console.ReadLine()
-            |> tryFindGoal
+            |> tryFindGoal existingGoals
                    
         match goal with
         | Some goal ->

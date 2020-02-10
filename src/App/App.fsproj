@@ -8,9 +8,12 @@
     <Compile Include="Types.fs" />
     <Compile Include="Utilities.fs" />
     <Compile Include="Parser.fs" />
-    <Compile Include="GoalCreation.fs" />
-    <Compile Include="TaskCreation.fs" />
-    <Compile Include="NewSubCommand.fs" />
+    <Compile Include="SubCommands/New/GoalCreation.fs" />
+    <Compile Include="SubCommands/New/TaskCreation.fs" />
+    <Compile Include="SubCommands/New/Command.fs" />
+    <Compile Include="SubCommands/Display/Utilities.fs" />
+    <Compile Include="SubCommands/Display/DisplayFunctions.fs" />
+    <Compile Include="SubCommands/Display/Command.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
   <Import Project="..\..\.paket\Paket.Restore.targets" />

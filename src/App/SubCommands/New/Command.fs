@@ -1,8 +1,8 @@
-module Achieve.NewSubCommand
+module Achieve.SubCommands.New.Command
 open Argu
 open Achieve.Parser
-open Achieve.GoalCreation
-open Achieve.TaskCreation
+open Achieve.SubCommands.New.GoalCreation
+open Achieve.SubCommands.New.TaskCreation
 
 
 let newFunctionality (arg: ParseResults<NewArgs>) =
