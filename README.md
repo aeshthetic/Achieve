@@ -8,7 +8,7 @@ On Unix-like systems, you can build using `dotnet`:
 
 ```shell
 dotnet tool install --global Paket
-packet install
+paket install
 dotnet build
 ```
 
