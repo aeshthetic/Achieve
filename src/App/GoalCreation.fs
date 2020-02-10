@@ -7,7 +7,13 @@ open System.IO
 let updateGoalList (goals: Goal list) =
     goals
     |> JsonConvert.SerializeObject
-    |> (fun it -> File.WriteAllText(dataFile, it))
+    |> (fun it ->
+        try
+            File.WriteAllText(dataFile, it)
+            Ok "Goal list updated successfully"
+        with e ->
+            Error e.Message
+        )
 
 let createGoal name =
     {name = name; tasks = []} :: allGoals()

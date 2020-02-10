@@ -11,8 +11,8 @@ let main argv =
             match command with
             | New arg ->
                 newFunctionality arg
-            | _ -> ()
-        | None -> ()
+            | _ -> Error "Command not found"
+        | None -> Error "No subcommand given"
         |> ignore
     with e ->
         printfn "%s" e.Message

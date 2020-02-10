@@ -12,23 +12,18 @@ let tryFindGoal name =
     |> List.filter (fun goal -> goal.name = name)
     |> List.tryHead
 
-let nameTask goal =
-    printfn "Name:"
-    let name = Console.ReadLine()
+let nameTask goal name =
     let taskAlreadyExists =
         goal.tasks
         |> List.map (fun t -> t.name)
         |> List.contains name
     
     match taskAlreadyExists with
-    | true -> None
-    | false ->
-        printfn "Task will be named %s" name
-        Some name
-
+    | false -> Ok name
+    | true -> Error "A task with this name already exists under this goal. Are you sure you don't want to update it?"
 
 let timeInput object format tryParseFunction toStringFunction =
-    printfn "(Optional) %s (%s)" object format
+    printf "(Optional) %s (%s): " object format
     let input =
         Console.ReadLine()
         |> tryParseFunction
@@ -67,21 +62,16 @@ let confirmDependencies (dependencies: Task list option) =
         depList
         |> List.map (fun dep -> dep.name)
         |> String.concat " ; "
-        |> printfn "The completion of this task will depend on the completion of the following tasks:\n%s"
-    | None -> printfn "The completion of this task will not depend on the completion of any other tasks."
+        |> sprintf "The completion of this task will depend on the completion of the following tasks:\n%s"
+        |> Ok
+    | None -> Error "The completion of this task will not depend on the completion of any other tasks."
 
 
-let collectDependencies goal =
-    printf "(Optional) Tasks that must be completed in order to begin this task (Separate tasks with ;)"
-    let dependencyInput = Console.ReadLine()
-    let dependencies =
-        match validDependencyInput dependencyInput with
-        | true -> Some (validDependencies dependencyInput goal)
-        | false -> None
+let collectDependencies goal dependencyInput =
+    match validDependencyInput dependencyInput with
+    | true -> Some (validDependencies dependencyInput goal)
+    | false -> None
     
-    confirmDependencies dependencies
-
-    dependencies
     
 let addTaskToGoal goal task =
     let newGoal = {goal with tasks = task :: goal.tasks}
@@ -89,31 +79,38 @@ let addTaskToGoal goal task =
     |> List.filter (fun g -> g <> goal))
     |> updateGoalList
 
-
-
-
 let createTask () =
-    if (List.isEmpty existingGoals) then
-        printf "Please create a goal before creating a task"
-    else
-        printf "Enter the name of a goal to create this task under:"
-        let goalName = Console.ReadLine()
-        let goal = tryFindGoal goalName
-                    
+    match List.isEmpty existingGoals with
+    | true -> Error "No existing goals"
+    | false ->
+        printf "Enter the name of a goal to create this task under: "
+        let goal =
+            Console.ReadLine()
+            |> tryFindGoal
+                   
         match goal with
         | Some goal ->
-            printf "Please provide the following information about the task being created. All provided information
-            can be edited later using the update command."
+            printfn "Please provide the following information about the task being created.\nAll provided information can be edited later using the update command."
 
-            let nameOption = nameTask goal
+            printf "Name: "
+            let name =
+                Console.ReadLine()
+                |> nameTask goal
             let dueAt = timeInput "Due Date and Time" "MM/DD/YYYY and optionally HH:MM:SS" DateTime.TryParseOption (fun dt -> dt.ToString("g", CultureInfo.CreateSpecificCulture("en-US")))
             let duration = timeInput "Duration" "days.hours:minutes" TimeSpan.TryParseOption (fun ts -> ts.ToString("g", CultureInfo("en-US")))
             let startsAt = timeInput "Start Date and Time" "MM/DD/YYYY and optionally HH:MM:SS" DateTime.TryParseOption (fun dt -> dt.ToString("g", CultureInfo.CreateSpecificCulture("en-US")))
-            let dependencies = collectDependencies goal
+            printf "Tasks that must be completed before this task can begin (separate tasks with ;): "
+            let dependencies =
+                Console.ReadLine()
+                |> collectDependencies goal
+            
+            match (confirmDependencies dependencies) with
+            | Ok msg -> printfn "%s" msg
+            | Error msg -> printfn "%s" msg
 
-            match nameOption with
-            | Some name ->
-                {name = name; dueAt = dueAt; duration = duration; dependsOn = dependencies; startsAt = startsAt}
-                |> addTaskToGoal goal
-            | None -> ()
-        | None -> ()
+            name
+            |> Result.bind (fun n ->
+                {name = n; dueAt = dueAt; duration = duration; dependsOn = dependencies; startsAt = startsAt}
+                |> addTaskToGoal goal)
+        
+        | None -> Error "Goal does not exist"
